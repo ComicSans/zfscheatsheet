@@ -1,77 +1,77 @@
-# watch activity
+## watch activity
 watch -n 1 zfs list -t all 
 watch -n 1 iostat -Nhm
 
-# install on (ubuntu) linux
+## install on (ubuntu) linux
 sudo add-apt-repository ppa:zfs-native/stable
 sudo apt-get update
 sudo apt-get install ubuntu-zfs
 
-# create new zfs drive with mirror
-## add to pool
+## create new zfs drive with mirror
+### add to pool
 zpool create home -o ashift=12 mirror /dev/sdb /dev/sdc
-## enable compression
+### enable compression
 zfs set compression=lz4 home
-## create partition
+### create partition
 zfs create tank/fish
 
-# create smb share
+## create smb share
 zfs get sharesmb
 smbpasswd yourUser
 zfs set sharesmb=on tank/fish
 zfs get -r sharesmb tank
 
-# show state
-## get common stats
+## show state
+### get common stats
 zfs get all tank/fish | awk '$3 ~ /[GEKMx]$/'
-## show partition details
+### show partition details
 zfs list -t all
-## show mountpoint details
+### show mountpoint details
 zpool list 
-## show detailed stats
+### show detailed stats
 zpool status
 
-# snapshots
-## create snapshot
+## snapshots
+### create snapshot
 zfs snapshot tank/fish@backup
-## send snapshot
+### send snapshot
 zfs send tank/fish@backup | zfs receive tank2/fish
 
-# destroy
-# destroy snapshot
+## destroy
+### destroy snapshot
 zfs destroy tank/fish@1
-# destroy partition
+### destroy partition
 zfs destroy tank/fish
-# destroy mount point
+### destroy mount point
 zfs destroy tank
 
-# rename
+## rename
 zfs rename tank/fish2 tank/fish
 
-# check ZFS
-## start check
+## check ZFS
+### start check
 zpool scrub tank
-## show progress
+### show progress
 zpool status
-## stop check
+### stop check
 zpool scrub -s tank
 
-# auto-snapshot
-## turn on
+## auto-snapshot
+### turn on
 zfs com.sun:auto-snapshot=true tank/fish
-## turn off
+### turn off
 zfs com.sun:auto-snapshot=false tank/fish
 
-# dedup
-## get current state
+## dedup
+### get current state
 zfs get dedup
-## enable dedup
+### enable dedup
 zfs set dedup=on usb/backup
-## disable dedup
+### disable dedup
 zfs set dedup=off usb/backup
 
-# zfs on usb
-## mount
+## zfs on usb
+### mount
 zfs import usb/partition
-## unmount
+### unmount
 zfs export usb/partition
